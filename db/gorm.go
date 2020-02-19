@@ -14,9 +14,9 @@ import (
 
 //Database ...
 type Database struct {
-	config   *config.Config
-	database *gorm.DB
-	logger   *logger.Logger
+	Config   *config.Config
+	Database *gorm.DB
+	Logger   *logger.Logger
 }
 
 const (
