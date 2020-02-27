@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/Sterks/FReader/config"
-	"github.com/Sterks/FReader/logger"
+	"github.com/Sterks/fReader/config"
+	"github.com/Sterks/fReader/logger"
 	model "github.com/Sterks/fReader/models"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" //....
