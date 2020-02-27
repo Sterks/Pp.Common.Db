@@ -7,7 +7,7 @@ import (
 
 	"github.com/Sterks/FReader/config"
 	"github.com/Sterks/FReader/logger"
-	model "github.com/Sterks/FReader/models"
+	model "github.com/Sterks/fReader/models"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" //....
 )
