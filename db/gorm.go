@@ -34,41 +34,41 @@ func (d *Database) OpenDatabase(config *config.Config, logger *logger.Logger) {
 		host, port, user, password, dbname)
 	db, err := gorm.Open("postgres", psqlInfo)
 	if err != nil {
-		d.logger.ErrorLog("Соединиться не удалось - %s", err)
+		d.Logger.ErrorLog("Соединиться не удалось - %s", err)
 	}
 	if err2 := db.DB().Ping(); err2 != nil {
-		d.logger.ErrorLog("База не отвечает", err2)
+		d.Logger.ErrorLog("База не отвечает", err2)
 	}
-	d.database = db
-	d.config = config
-	d.logger = logger
+	d.Database = db
+	d.Config = config
+	d.Logger = logger
 }
 
 // CreateInfoFile ...
 func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, fullpath string) int {
 	// d.database.Set("gorm:association_autoupdate", false).Set("gorm:association_autocreate", false).Create(&files)
 	// filesTypes := d.database.Table("FileType")
-	d.database.LogMode(true)
+	d.Database.LogMode(true)
 
 	var gf model.SourceRegions
-	d.database.Table("SourceRegions").Where("r_name = ?", region).Find(&gf)
+	d.Database.Table("SourceRegions").Where("r_name = ?", region).Find(&gf)
 
 	checker := d.CheckExistFileDb(info, hash)
 	if checker != 0 {
 		var lf model.File
-		d.database.Table("Files").Where("f_id = ?", checker).Find(&lf)
+		d.Database.Table("Files").Where("f_id = ?", checker).Find(&lf)
 		lf.TDateLastCheck = time.Now()
-		d.database.Save(&lf)
-		d.logger.InfoLog("Дата успешно обновлена", lf.TDateLastCheck.String())
+		d.Database.Save(&lf)
+		d.Logger.InfoLog("Дата успешно обновлена", lf.TDateLastCheck.String())
 	}
 	if checker == 0 {
 
 		var fileType model.FileType
 		var lastID model.File
-		d.database.Table("FilesTypes").Where("ft_name = ?", "ZIP архив").Find(&fileType)
+		d.Database.Table("FilesTypes").Where("ft_name = ?", "ZIP архив").Find(&fileType)
 
-		d.database.Table("Files")
-		d.database.Create(&model.File{
+		d.Database.Table("Files")
+		d.Database.Create(&model.File{
 			TName:                 info.Name(),
 			TArea:                 gf.RID,
 			FileType:              fileType,
@@ -80,7 +80,7 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 			TDateLastCheck:        time.Now(),
 			TFullpath:             fullpath,
 		}).Scan(&lastID)
-		d.logger.InfoLog("Файл успешно добавлен - ", lastID.TName)
+		d.Logger.InfoLog("Файл успешно добавлен - ", lastID.TName)
 		return lastID.TID
 	} else {
 		fmt.Printf("Файл существует - %v\n", info.Name())
@@ -91,7 +91,7 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 //LastID ...
 func (d *Database) LastID() int {
 	var ff model.File
-	d.database.Table("Files").Last(&ff)
+	d.Database.Table("Files").Last(&ff)
 	return ff.TID
 }
 
@@ -99,28 +99,28 @@ func (d *Database) LastID() int {
 func (d *Database) CheckerExistFileDBNotHash(file os.FileInfo) (int, string) {
 	var ff model.File
 	fmt.Printf("%v - %v - %v", file.Size(), file.Name(), file.ModTime())
-	d.database.Table("Files").Where("f_size = ? and f_name = ? and f_date_create_from_source = ?", file.Size(), file.Name(), file.ModTime()).Find(&ff)
+	d.Database.Table("Files").Where("f_size = ? and f_name = ? and f_date_create_from_source = ?", file.Size(), file.Name(), file.ModTime()).Find(&ff)
 	return ff.TID, ff.THash
 }
 
 // CheckExistFileDb ...
 func (d *Database) CheckExistFileDb(file os.FileInfo, hash string) int {
 	var ff model.File
-	d.database.Table("Files").Where("f_hash = ? and f_size = ? and f_name = ?", hash, file.Size(), file.Name()).Find(&ff)
+	d.Database.Table("Files").Where("f_hash = ? and f_size = ? and f_name = ?", hash, file.Size(), file.Name()).Find(&ff)
 	return ff.TID
 }
 
 //CheckRegionsDb Проверка существует ли регион в базе данных
 func (d *Database) CheckRegionsDb(region string) int {
 	var reg model.SourceRegions
-	d.database.Table("SourceRegions").Where("r_name = ?", region).First(&reg)
+	d.Database.Table("SourceRegions").Where("r_name = ?", region).First(&reg)
 	return reg.RID
 }
 
 //ReaderRegionsDb Все регионы из базы
 func (d *Database) ReaderRegionsDb() []model.SourceRegions {
 	var regions []model.SourceRegions
-	d.database.Table("SourceRegions").Find(&regions)
+	d.Database.Table("SourceRegions").Find(&regions)
 	return regions
 }
 
@@ -130,7 +130,7 @@ func (d *Database) AddRegionsDb(region string) {
 	reg.RName = region
 	reg.RDateCreate = time.Now()
 	reg.RDateUpdate = time.Now()
-	d.database.Table("SourceRegions").Create(&reg)
+	d.Database.Table("SourceRegions").Create(&reg)
 }
 
 // FirstOrCreate Создать или получить
@@ -139,6 +139,6 @@ func (d *Database) FirstOrCreate(region string) model.SourceRegions {
 	reg.RName = region
 	reg.RDateCreate = time.Now()
 	reg.RDateUpdate = time.Now()
-	d.database.Table("SourceRegions").Where("r_name = ?", region).FirstOrCreate(&reg)
+	d.Database.Table("SourceRegions").Where("r_name = ?", region).FirstOrCreate(&reg)
 	return reg
 }
