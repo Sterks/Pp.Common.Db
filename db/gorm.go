@@ -38,7 +38,7 @@ func (d *Database) OpenDatabase(config *config.Config, logger *logger.Logger) {
 		log.Printf("Соединиться не удалось - %s", err)
 	}
 	if err2 := db.DB().Ping(); err2 != nil {
-		log.Printf("База не отвечает", err2)
+		log.Printf("База не отвечает - %v", err2)
 	}
 	d.Database = db
 	d.Config = config
@@ -99,7 +99,7 @@ func (d *Database) LastID() int {
 // CheckerExistFileDBNotHash ...
 func (d *Database) CheckerExistFileDBNotHash(file os.FileInfo) (int, string) {
 	var ff model.File
-	fmt.Printf("%v - %v - %v", file.Size(), file.Name(), file.ModTime())
+	fmt.Println("%v - %v - %v", file.Size(), file.Name(), file.ModTime())
 	d.Database.Table("Files").Where("f_size = ? and f_name = ? and f_date_create_from_source = ?", file.Size(), file.Name(), file.ModTime()).Find(&ff)
 	return ff.TID, ff.THash
 }
