@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -34,10 +35,10 @@ func (d *Database) OpenDatabase(config *config.Config, logger *logger.Logger) {
 		host, port, user, password, dbname)
 	db, err := gorm.Open("postgres", psqlInfo)
 	if err != nil {
-		d.Logger.ErrorLog("Соединиться не удалось - %s", err)
+		log.Printf("Соединиться не удалось - %s", err)
 	}
 	if err2 := db.DB().Ping(); err2 != nil {
-		d.Logger.ErrorLog("База не отвечает", err2)
+		log.Printf("База не отвечает", err2)
 	}
 	d.Database = db
 	d.Config = config
