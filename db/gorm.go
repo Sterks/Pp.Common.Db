@@ -2,13 +2,13 @@ package db
 
 import (
 	"fmt"
+	"github.com/Sterks/Pp.Common.Db/models"
 	"log"
 	"os"
 	"time"
 
 	"github.com/Sterks/fReader/config"
 	"github.com/Sterks/fReader/logger"
-	model "github.com/Sterks/fReader/models"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" //....
 )
@@ -46,17 +46,20 @@ func (d *Database) OpenDatabase(config *config.Config, logger *logger.Logger) {
 }
 
 // CreateInfoFile ...
-func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, fullpath string) int {
+func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, fullpath string, typeFile string) int {
 	// d.database.Set("gorm:association_autoupdate", false).Set("gorm:association_autocreate", false).Create(&files)
 	// filesTypes := d.database.Table("FileType")
 	d.Database.LogMode(true)
 
-	var gf model.SourceRegions
+	var gf models.SourceRegions
 	d.Database.Table("SourceRegions").Where("r_name = ?", region).Find(&gf)
+
+	var sr models.SourceResources
+	d.Database.Table("SourceResources").Where("sr_name = ?", typeFile).Find(&sr)
 
 	checker := d.CheckExistFileDb(info, hash)
 	if checker != 0 {
-		var lf model.File
+		var lf models.File
 		d.Database.Table("Files").Where("f_id = ?", checker).Find(&lf)
 		lf.TDateLastCheck = time.Now()
 		d.Database.Save(&lf)
@@ -64,12 +67,12 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 	}
 	if checker == 0 {
 
-		var fileType model.FileType
-		var lastID model.File
+		var fileType models.FileType
+		var lastID models.File
 		d.Database.Table("FilesTypes").Where("ft_name = ?", "ZIP архив").Find(&fileType)
 
 		d.Database.Table("Files")
-		d.Database.Create(&model.File{
+		d.Database.Create(&models.File{
 			TName:                 info.Name(),
 			TArea:                 gf.RID,
 			FileType:              fileType,
@@ -91,14 +94,14 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 
 //LastID ...
 func (d *Database) LastID() int {
-	var ff model.File
+	var ff models.File
 	d.Database.Table("Files").Last(&ff)
 	return ff.TID
 }
 
 // CheckerExistFileDBNotHash ...
 func (d *Database) CheckerExistFileDBNotHash(file os.FileInfo) (int, string) {
-	var ff model.File
+	var ff models.File
 	fmt.Println("%v - %v - %v", file.Size(), file.Name(), file.ModTime())
 	d.Database.Table("Files").Where("f_size = ? and f_name = ? and f_date_create_from_source = ?", file.Size(), file.Name(), file.ModTime()).Find(&ff)
 	return ff.TID, ff.THash
@@ -106,28 +109,35 @@ func (d *Database) CheckerExistFileDBNotHash(file os.FileInfo) (int, string) {
 
 // CheckExistFileDb ...
 func (d *Database) CheckExistFileDb(file os.FileInfo, hash string) int {
-	var ff model.File
+	var ff models.File
 	d.Database.Table("Files").Where("f_hash = ? and f_size = ? and f_name = ?", hash, file.Size(), file.Name()).Find(&ff)
 	return ff.TID
 }
 
 //CheckRegionsDb Проверка существует ли регион в базе данных
 func (d *Database) CheckRegionsDb(region string) int {
-	var reg model.SourceRegions
+	var reg models.SourceRegions
 	d.Database.Table("SourceRegions").Where("r_name = ?", region).First(&reg)
 	return reg.RID
 }
 
+// CheckSourceResourcesDb - Вернуть ID ресурса
+func (d *Database) CheckSourceResourcesDb( resource string ) int {
+	var res models.SourceResources
+	d.Database.Table("SourceResources").Where("sr_name = ?", resource).First(&res)
+	return res.SRID
+}
+
 //ReaderRegionsDb Все регионы из базы
 func (d *Database) ReaderRegionsDb() []model.SourceRegions {
-	var regions []model.SourceRegions
+	var regions []models.SourceRegions
 	d.Database.Table("SourceRegions").Find(&regions)
 	return regions
 }
 
 //AddRegionsDb ...
 func (d *Database) AddRegionsDb(region string) {
-	var reg model.SourceRegions
+	var reg models.SourceRegions
 	reg.RName = region
 	reg.RDateCreate = time.Now()
 	reg.RDateUpdate = time.Now()
@@ -135,8 +145,8 @@ func (d *Database) AddRegionsDb(region string) {
 }
 
 // FirstOrCreate Создать или получить
-func (d *Database) FirstOrCreate(region string) model.SourceRegions {
-	var reg model.SourceRegions
+func (d *Database) FirstOrCreate(region string) models.SourceRegions {
+	var reg models.SourceRegions
 	reg.RName = region
 	reg.RDateCreate = time.Now()
 	reg.RDateUpdate = time.Now()
