@@ -83,6 +83,7 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 			TDateCreateFromSource: info.ModTime(),
 			TDateLastCheck:        time.Now(),
 			TFullpath:             fullpath,
+			TSourceResources: 	   sr.SRID,
 		}).Scan(&lastID)
 		d.Logger.InfoLog("Файл успешно добавлен - ", lastID.TName)
 		return lastID.TID
@@ -129,7 +130,7 @@ func (d *Database) CheckSourceResourcesDb( resource string ) int {
 }
 
 //ReaderRegionsDb Все регионы из базы
-func (d *Database) ReaderRegionsDb() []model.SourceRegions {
+func (d *Database) ReaderRegionsDb() []models.SourceRegions {
 	var regions []models.SourceRegions
 	d.Database.Table("SourceRegions").Find(&regions)
 	return regions
