@@ -83,7 +83,7 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 			TFullpath:             fullpath,
 			TSourceResources: 	   sr.SRID,
 		}).Scan(&lastID)
-		d.Logger.InfoLog("Файл успешно добавлен - ", lastID.TName)
+		fmt.Printf("Файл успешно добавлен - ", lastID.TName)
 		return lastID.TID
 	} else {
 		fmt.Printf("Файл существует - %v\n", info.Name())
