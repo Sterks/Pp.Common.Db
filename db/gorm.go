@@ -70,7 +70,7 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 
 		var fileType models.FileType
 		var lastID models.File
-		d.Database.Table("FilesTypes").Where("ft_name = ?", ext ).Find(&fileType)
+		d.Database.Table("FilesTypes").Where("ft_ext = ?", ext ).Find(&fileType)
 
 		d.Database.Table("Files")
 		d.Database.Create(&models.File{
