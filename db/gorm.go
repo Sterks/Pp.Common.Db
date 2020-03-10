@@ -29,7 +29,7 @@ const (
 )
 
 // OpenDatabase ...
-func (d *Database) OpenDatabase(config *config.Config, logger *logger.Logger) {
+func (d *Database) OpenDatabase() {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
@@ -41,8 +41,6 @@ func (d *Database) OpenDatabase(config *config.Config, logger *logger.Logger) {
 		log.Printf("База не отвечает - %v", err2)
 	}
 	d.Database = db
-	d.Config = config
-	d.Logger = logger
 }
 
 // CreateInfoFile ...
