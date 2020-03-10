@@ -61,7 +61,7 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 		d.Database.Table("Files").Where("f_id = ?", checker).Find(&lf)
 		lf.TDateLastCheck = time.Now()
 		d.Database.Save(&lf)
-		fmt.Printf("Дата успешно обновлена", lf.TDateLastCheck.String())
+		log.Printf("Дата успешно обновлена - %v", lf.TDateLastCheck.String())
 	}
 	if checker == 0 {
 
@@ -83,10 +83,10 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 			TFullpath:             fullpath,
 			TSourceResources: 	   sr.SRID,
 		}).Scan(&lastID)
-		fmt.Printf("Файл успешно добавлен - %v ", lastID.TName)
+		log.Printf("Файл успешно добавлен - %v ", lastID.TName)
 		return lastID.TID
 	} else {
-		fmt.Printf("Файл существует - %v\n", info.Name())
+		log.Printf("Файл существует - %v\n", info.Name())
 		return 0
 	}
 }
