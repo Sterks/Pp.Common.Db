@@ -5,6 +5,7 @@ import (
 	"github.com/Sterks/Pp.Common.Db/models"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/Sterks/fReader/config"
@@ -65,9 +66,11 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 	}
 	if checker == 0 {
 
+		ext := filepath.Ext(info.Name())
+
 		var fileType models.FileType
 		var lastID models.File
-		d.Database.Table("FilesTypes").Where("ft_name = ?", "ZIP архив").Find(&fileType)
+		d.Database.Table("FilesTypes").Where("ft_name = ?", ext ).Find(&fileType)
 
 		d.Database.Table("Files")
 		d.Database.Create(&models.File{
