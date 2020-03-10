@@ -61,7 +61,7 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 		d.Database.Table("Files").Where("f_id = ?", checker).Find(&lf)
 		lf.TDateLastCheck = time.Now()
 		d.Database.Save(&lf)
-		d.Logger.InfoLog("Дата успешно обновлена", lf.TDateLastCheck.String())
+		fmt.Printf("Дата успешно обновлена", lf.TDateLastCheck.String())
 	}
 	if checker == 0 {
 
