@@ -23,8 +23,8 @@ type File struct {
 	TFullpath             string        `gorm:"column:f_fullpath"`
 	TDateLastCheck        time.Time     `gorm:"column:f_date_last_check"`
 	TFileIsDir            string        `gorm:"column:f_file_is_dir"`
-	SourceResources		  SourceResources `gorm:"foregignkey:TSourceResources;association_foreignkey:f_source_regions_id"`
-	TSourceResources 	  int			`gorm:"column:f_source_regions_id"`
+	SourceResources		  SourceResources `gorm:"foregignkey:TSourceResources;association_foreignkey:f_source_resources_id"`
+	TSourceResources 	  int			`gorm:"column:f_source_resources_id"`
 }
 
 // TableName ...
