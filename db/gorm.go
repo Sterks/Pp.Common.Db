@@ -30,7 +30,7 @@ const (
 )
 
 // OpenDatabase ...
-func (d *Database) OpenDatabase() {
+func (d *Database) OpenDatabase() *gorm.DB {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
@@ -42,6 +42,7 @@ func (d *Database) OpenDatabase() {
 		log.Printf("База не отвечает - %v", err2)
 	}
 	d.Database = db
+	return db
 }
 
 // CreateInfoFile ...
