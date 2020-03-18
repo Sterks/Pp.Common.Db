@@ -42,7 +42,7 @@ func (d *Database) OpenDatabase() *gorm.DB {
 		log.Printf("База не отвечает - %v", err2)
 	}
 	d.Database = db
-	return db
+	return d.Database
 }
 
 // CreateInfoFile ...
@@ -95,12 +95,23 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 	}
 }
 
-//LastID ...
+//LastID
 func (d *Database) LastID() int {
 	var ff models.File
 	d.Database.Table("Files").Last(&ff)
 	return ff.TID
 }
+
+func (d *Database) QuantityTypeDoc(typeFile string) int {
+	var sr models.SourceResources
+	d.Database.Table("SourceResources").Where("sr_name = ?", typeFile).Find(&sr)
+
+	var ff models.File
+	var total int
+	d.Database.Table("Files").Where("f_source_resources_id = ?", sr.SRID).Find(&ff).Count(&total)
+	return total
+}
+
 
 // CheckerExistFileDBNotHash ...
 func (d *Database) CheckerExistFileDBNotHash(file os.FileInfo) (int, string) {
