@@ -106,7 +106,7 @@ func (d *Database) QuantityTypeDoc(typeFile string) int {
 	var sr models.SourceResources
 	d.Database.Table("SourceResources").Where("sr_name = ?", typeFile).Find(&sr)
 
-	var ff models.File
+	var ff []models.File
 	var total int
 	d.Database.Table("Files").Where("f_source_resources_id = ?", sr.SRID).Find(&ff).Count(&total)
 	return total
