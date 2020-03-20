@@ -108,10 +108,10 @@ func (d *Database) QuantityTypeDoc(typeFile string) int {
 
 	var ff []models.File
 	var total int
+	d.Database.Model(&models.File{}).Related(&models.FileType{}, )
 	d.Database.Table("Files").Where("f_source_resources_id = ?", sr.SRID).Find(&ff).Count(&total)
 	return total
 }
-
 
 // CheckerExistFileDBNotHash ...
 func (d *Database) CheckerExistFileDBNotHash(file os.FileInfo) (int, string) {
@@ -166,4 +166,14 @@ func (d *Database) FirstOrCreate(region string) models.SourceRegions {
 	reg.RDateUpdate = time.Now()
 	d.Database.Table("SourceRegions").Where("r_name = ?", region).FirstOrCreate(&reg)
 	return reg
+}
+
+//CreateTask - дабавление заданий
+func (d *Database) CreateTask(tsName string, tsDataStart time.Time, tsRunTimes int, tsComment string) {
+	d.Database.Create(&models.Task{
+		TSName:      tsName,
+		TSDataStart: tsDataStart,
+		TSRunTimes:  tsRunTimes,
+		TSComment:   tsComment,
+		})
 }
