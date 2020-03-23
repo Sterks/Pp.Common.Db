@@ -170,8 +170,7 @@ func (d *Database) FirstOrCreate(region string) models.SourceRegions {
 
 //CreateTask - дабавление заданий
 func (d *Database) CreateTask(tsName string, tsDataStart time.Time, tsRunTimes int, tsComment string) {
-	d.Database.Table("Tasks")
-	d.Database.Create(&models.Tasks{
+	d.Database.Table("Tasks").Create(&models.Tasks{
 		TSName:      tsName,
 		TSDataStart: tsDataStart,
 		TSRunTimes:  tsRunTimes,
