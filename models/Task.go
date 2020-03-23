@@ -3,7 +3,7 @@ package models
 import "time"
 
 // Task - Задачи для запуска
-type Task struct {
+type Tasks struct {
 	TSID int `gorm:"column:ts_id;primary_key"`
 	TSName string `gorm:"column:ts_name"`
 	TSDataStart time.Time `gorm:"column:ts_data_start"`
