@@ -50,6 +50,7 @@ func (d *Database) OpenDatabase() *gorm.DB {
 func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, fullpath string, typeFile string) int {
 	// d.database.Set("gorm:association_autoupdate", false).Set("gorm:association_autocreate", false).Create(&files)
 	// filesTypes := d.database.Table("FileType")
+
 	// d.Database.LogMode(true)
 
 	var gf models.SourceRegions
@@ -96,13 +97,14 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 	}
 }
 
-//LastID
+// LastID ...
 func (d *Database) LastID() int {
 	var ff models.File
 	d.Database.Table("Files").Last(&ff)
 	return ff.TID
 }
 
+// QuantityTypeDoc ...
 func (d *Database) QuantityTypeDoc(typeFile string) int {
 	var sr models.SourceResources
 	d.Database.Table("SourceResources").Where("sr_name = ?", typeFile).Find(&sr)
@@ -117,7 +119,7 @@ func (d *Database) QuantityTypeDoc(typeFile string) int {
 // CheckerExistFileDBNotHash ...
 func (d *Database) CheckerExistFileDBNotHash(file os.FileInfo) (int, string) {
 	var ff models.File
-	fmt.Println("%v - %v - %v", file.Size(), file.Name(), file.ModTime())
+	fmt.Printf("%v - %v - %v", file.Size(), file.Name(), file.ModTime())
 	d.Database.Table("Files").Where("f_size = ? and f_name = ? and f_date_create_from_source = ?", file.Size(), file.Name(), file.ModTime()).Find(&ff)
 	return ff.TID, ff.THash
 }
