@@ -2,10 +2,11 @@ package db
 
 import (
 	"fmt"
-	"github.com/Sterks/Pp.Common.Db/models"
 	"log"
 	"os"
 	"time"
+
+	"github.com/Sterks/Pp.Common.Db/models"
 
 	"github.com/Sterks/fReader/config"
 	"github.com/Sterks/fReader/logger"
@@ -102,7 +103,7 @@ func (d *Database) LastID() int {
 // CheckerExistFileDBNotHash ...
 func (d *Database) CheckerExistFileDBNotHash(file os.FileInfo) (int, string) {
 	var ff models.File
-	fmt.Println("%v - %v - %v", file.Size(), file.Name(), file.ModTime())
+	fmt.Printf("%v - %v - %v", file.Size(), file.Name(), file.ModTime())
 	d.Database.Table("Files").Where("f_size = ? and f_name = ? and f_date_create_from_source = ?", file.Size(), file.Name(), file.ModTime()).Find(&ff)
 	return ff.TID, ff.THash
 }
@@ -122,14 +123,14 @@ func (d *Database) CheckRegionsDb(region string) int {
 }
 
 // CheckSourceResourcesDb - Вернуть ID ресурса
-func (d *Database) CheckSourceResourcesDb( resource string ) int {
+func (d *Database) CheckSourceResourcesDb(resource string) int {
 	var res models.SourceResources
 	d.Database.Table("SourceResources").Where("sr_name = ?", resource).First(&res)
 	return res.SRID
 }
 
 //ReaderRegionsDb Все регионы из базы
-func (d *Database) ReaderRegionsDb() []model.SourceRegions {
+func (d *Database) ReaderRegionsDb() []models.SourceRegions {
 	var regions []models.SourceRegions
 	d.Database.Table("SourceRegions").Find(&regions)
 	return regions
