@@ -50,7 +50,9 @@ func (d *Database) OpenDatabase(config *config.Config, logger *logger.Logger) {
 func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, fullpath string, typeFile string) int {
 	// d.database.Set("gorm:association_autoupdate", false).Set("gorm:association_autocreate", false).Create(&files)
 	// filesTypes := d.database.Table("FileType")
-	d.Database.LogMode(true)
+
+	// Вывод всех запросов в консоль
+	// d.Database.LogMode(true)
 
 	var gf models.SourceRegions
 	d.Database.Table("SourceRegions").Where("r_name = ?", region).Find(&gf)
