@@ -2,11 +2,12 @@ package db
 
 import (
 	"fmt"
-	"github.com/Sterks/Pp.Common.Db/models"
 	"log"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/Sterks/Pp.Common.Db/models"
 
 	"github.com/Sterks/fReader/config"
 	"github.com/Sterks/fReader/logger"
@@ -49,7 +50,7 @@ func (d *Database) OpenDatabase() *gorm.DB {
 func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, fullpath string, typeFile string) int {
 	// d.database.Set("gorm:association_autoupdate", false).Set("gorm:association_autocreate", false).Create(&files)
 	// filesTypes := d.database.Table("FileType")
-	d.Database.LogMode(true)
+	// d.Database.LogMode(true)
 
 	var gf models.SourceRegions
 	d.Database.Table("SourceRegions").Where("r_name = ?", region).Find(&gf)
@@ -71,7 +72,7 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 
 		var fileType models.FileType
 		var lastID models.File
-		d.Database.Table("FilesTypes").Where("ft_ext = ?", ext ).Find(&fileType)
+		d.Database.Table("FilesTypes").Where("ft_ext = ?", ext).Find(&fileType)
 
 		d.Database.Table("Files")
 		d.Database.Create(&models.File{
@@ -85,7 +86,7 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 			TDateCreateFromSource: info.ModTime(),
 			TDateLastCheck:        time.Now(),
 			TFullpath:             fullpath,
-			TSourceResources: 	   sr.SRID,
+			TSourceResources:      sr.SRID,
 		}).Scan(&lastID)
 		log.Printf("Файл успешно добавлен - %v ", lastID.TName)
 		return lastID.TID
@@ -108,7 +109,7 @@ func (d *Database) QuantityTypeDoc(typeFile string) int {
 
 	var ff []models.File
 	var total int
-	d.Database.Model(&models.File{}).Related(&models.FileType{}, )
+	d.Database.Model(&models.File{}).Related(&models.FileType{})
 	d.Database.Table("Files").Where("f_source_resources_id = ?", sr.SRID).Find(&ff).Count(&total)
 	return total
 }
@@ -136,7 +137,7 @@ func (d *Database) CheckRegionsDb(region string) int {
 }
 
 // CheckSourceResourcesDb - Вернуть ID ресурса
-func (d *Database) CheckSourceResourcesDb( resource string ) int {
+func (d *Database) CheckSourceResourcesDb(resource string) int {
 	var res models.SourceResources
 	d.Database.Table("SourceResources").Where("sr_name = ?", resource).First(&res)
 	return res.SRID
@@ -175,5 +176,5 @@ func (d *Database) CreateTask(tsName string, tsDataStart time.Time, tsRunTimes i
 		TSDataStart: tsDataStart,
 		TSRunTimes:  tsRunTimes,
 		TSComment:   tsComment,
-		})
+	})
 }
