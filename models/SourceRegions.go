@@ -8,6 +8,7 @@ type SourceRegions struct {
 	RName       string    `gorm:"column:r_name"`
 	RDateCreate time.Time `gorm:"column:r_date_create"`
 	RDateUpdate time.Time `gorm:"column:r_date_update"`
+	RFZLaw 		int 	  `gorm:"column:r_fz_law"`
 }
 
 // TableNameSourceRegions ...
