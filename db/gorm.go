@@ -51,7 +51,7 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 	// d.database.Set("gorm:association_autoupdate", false).Set("gorm:association_autocreate", false).Create(&files)
 	// filesTypes := d.database.Table("FileType")
 
-	// d.Database.LogMode(true)
+	d.Database.LogMode(true)
 
 	var gf models.SourceRegions
 	d.Database.Table("SourceRegions").Where("r_name = ?", region).Find(&gf)
