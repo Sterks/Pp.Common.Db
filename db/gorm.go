@@ -153,20 +153,26 @@ func (d *Database) ReaderRegionsDb() []models.SourceRegions {
 }
 
 //AddRegionsDb ...
-func (d *Database) AddRegionsDb(region string) {
+func (d *Database) AddRegionsDb(region string, law string) {
+	var typeLaw models.FederalLaw
+	d.Database.Table("FederalLaw").Where("fl_name_law = ?", law).First(&typeLaw)
 	var reg models.SourceRegions
 	reg.RName = region
 	reg.RDateCreate = time.Now()
 	reg.RDateUpdate = time.Now()
+	reg.RFZLaw = typeLaw.RLID
 	d.Database.Table("SourceRegions").Create(&reg)
 }
 
 // FirstOrCreate Создать или получить
-func (d *Database) FirstOrCreate(region string) models.SourceRegions {
+func (d *Database) FirstOrCreate(region string, law string) models.SourceRegions {
+	var typeLaw models.FederalLaw
+	d.Database.Table("FederalLaw").Where("fl_name_law = ?", law).First(&typeLaw)
 	var reg models.SourceRegions
 	reg.RName = region
 	reg.RDateCreate = time.Now()
 	reg.RDateUpdate = time.Now()
+	reg.RFZLaw = typeLaw.RLID
 	d.Database.Table("SourceRegions").Where("r_name = ?", region).FirstOrCreate(&reg)
 	return reg
 }
