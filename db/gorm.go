@@ -47,7 +47,7 @@ func (d *Database) OpenDatabase() *gorm.DB {
 }
 
 // CreateInfoFile ...
-func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, fullpath string, typeFile string) int {
+func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, fullpath string, typeFile string, file string) int {
 	// d.database.Set("gorm:association_autoupdate", false).Set("gorm:association_autocreate", false).Create(&files)
 	// filesTypes := d.database.Table("FileType")
 
@@ -56,12 +56,8 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 	var gf models.SourceRegions
 	d.Database.Table("SourceRegions").Where("r_name = ?", region).Find(&gf)
 
-	if (typeFile == ".+Notice") {
-		typeFile = "Notification"
-	}
-
 	var sr models.SourceResources
-	d.Database.Table("SourceResources").Where("sr_name = ?", typeFile).Find(&sr)
+	d.Database.Table("SourceResources").Where("sr_name = ?", file).Find(&sr)
 
 	checker := d.CheckExistFileDb(info, hash)
 	if checker != 0 {
