@@ -56,6 +56,10 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 	var gf models.SourceRegions
 	d.Database.Table("SourceRegions").Where("r_name = ?", region).Find(&gf)
 
+	if (typeFile == ".+Notice") {
+		typeFile = "Notification"
+	}
+
 	var sr models.SourceResources
 	d.Database.Table("SourceResources").Where("sr_name = ?", typeFile).Find(&sr)
 
