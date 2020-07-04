@@ -97,11 +97,11 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 	}
 }
 
-// CountNotification44 Сколько извещений загружено
-func (d *Database) CountNotification44(from time.Time, to time.Time, typeDoc int) int {
+// CountDocument Сколько документов загружено
+func (d *Database) CountDocument(from time.Time, to time.Time, typeDoc int, extDoc int) int {
 	var files []models.File
 	var count int
-	if err := d.Database.Table("Files").Where("f_date_create_from_source >= ? AND f_date_create_from_source <= ? AND f_source_resources_id = ? ", from, to, typeDoc).Find(&files).Count(&count).Error; err != nil {
+	if err := d.Database.Table("Files").Where("f_date_create_from_source >= ? AND f_date_create_from_source <= ? AND f_source_resources_id = ? AND f_type = ? ", from, to, typeDoc, extDoc).Find(&files).Count(&count).Error; err != nil {
 		log.Printf("Не могу посчитать кол-во файлов, файлы не получаю - %v", err)
 	}
 	return count
