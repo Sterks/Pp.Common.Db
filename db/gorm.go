@@ -98,11 +98,13 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 }
 
 // CountNotification44 Сколько извещений загружено
-func (d *Database) CountNotification44(from time.Time, to time.Time) {
+func (d *Database) CountNotification44(from time.Time, to time.Time) int {
 	var files []models.File
-	if err := d.Database.Table("Files").Where("f_date_create_from_source >= ? AND f_date_create_from_source <= ? ", from, to).Find(&files).Error; err != nil {
+	var count int
+	if err := d.Database.Table("Files").Where("f_date_create_from_source >= ? AND f_date_create_from_source <= ? ", from, to).Find(&files).Count(&count).Error; err != nil {
 		log.Printf("Не могу посчитать кол-во файлов, файлы не получаю - %v", err)
 	}
+	return count
 }
 
 // LastID ...
