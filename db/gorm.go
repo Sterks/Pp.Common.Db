@@ -58,7 +58,7 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 
 	var sr models.SourceResources
 	file = strings.ToLower(file)
-	if err := d.Database.Table("SourceResources").Where("sr_name = ?", file).Find(&sr); err != nil {
+	if err := d.Database.Table("SourceResources").Where("sr_name = ?", file).Find(&sr).Error; err != nil {
 		log.Panicf("Не могу определить Resource - %v", err)
 	}
 
