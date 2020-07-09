@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/Sterks/Pp.Common.Db/models"
@@ -56,7 +57,10 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 	d.Database.Table("SourceRegions").Where("r_name = ?", region).Find(&gf)
 
 	var sr models.SourceResources
-	d.Database.Table("SourceResources").Where("sr_name = ?", file).Find(&sr)
+	file = strings.ToLower(file)
+	if err := d.Database.Table("SourceResources").Where("sr_name = ?", file).Find(&sr); err != nil {
+		log.Panicf("Не могу определить Resource - %v", err)
+	}
 
 	checker := d.CheckExistFileDb(info, hash)
 	if checker != 0 {
