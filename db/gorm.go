@@ -75,7 +75,7 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 		d.Database.Table("FilesTypes").Where("ft_ext = ?", ext).Find(&fileType)
 
 		d.Database.Table("Files")
-		d.Database.Create(&models.File{
+		if err := d.Database.Create(&models.File{
 			TName:                 info.Name(),
 			TArea:                 gf.RID,
 			FileType:              fileType,
@@ -87,8 +87,9 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 			TDateLastCheck:        time.Now(),
 			TFullpath:             fullpath,
 			TSourceResources:      sr.SRID,
-		}).Scan(&lastID)
-		log.Printf("Файл успешно добавлен - %v", lastID.TName)
+		}).Scan(&lastID).Error; err != nil {
+			log.Fatalf("Не могу записать в базу - %v", err)
+		}
 		return lastID.TID
 	} else {
 		log.Printf("Файл существует - %v\n", info.Name())
