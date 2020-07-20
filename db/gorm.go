@@ -114,7 +114,18 @@ func (d *Database) CountDocument(from time.Time, to time.Time, typeDoc int, extD
 // LastID ...
 func (d *Database) LastID() int {
 	var ff models.File
-	d.Database.Table("Files").Last(&ff)
+	var seq models.Seq
+	if err := d.Database.Table("Files").Last(&ff).Error; err != nil {
+		log.Printf("Не могу получить данные из таблицы 'Files' - %v", err)
+	}
+	//query := fmt.Sprint("select last_value")
+	if ff.TID == 0 {
+		if err4 := d.Database.Raw(`SELECT "last_value", "log_cnt", "is_called" FROM public."Files_f_id_seq"`).Scan(&seq).Error; err4 != nil {
+			log.Println(err4)
+		}
+		ff.TID = seq.Last_value
+		fmt.Println(seq.Last_value)
+	}
 	return ff.TID
 }
 
@@ -150,6 +161,18 @@ func (d *Database) CheckRegionsDb(region string) int {
 	var reg models.SourceRegions
 	d.Database.Table("SourceRegions").Where("r_name = ?", region).First(&reg)
 	return reg.RID
+}
+
+func (d *Database) GetAllRegions44() []models.SourceRegions {
+	var regions []models.SourceRegions
+	d.Database.Table("SourceRegions").Where("r_fz_law = 1").Scan(&regions)
+	return regions
+}
+
+func (d *Database) GetAllRegions223() []models.SourceRegions {
+	var regions []models.SourceRegions
+	d.Database.Table("SourceRegions").Where("r_fz_law = 2").Scan(&regions)
+	return regions
 }
 
 // CheckSourceResourcesDb - Вернуть ID ресурса
