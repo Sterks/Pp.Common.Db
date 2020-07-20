@@ -1,6 +1,6 @@
 package models
 
-// Seq Получение последнего ид
+// Seq Получение последнего id
 type Seq struct {
 	Last_value int `gorm:"column:last_value"`
 	Log_cnt int `gorm:"column:log_cnt"`
