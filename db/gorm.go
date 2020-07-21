@@ -124,7 +124,6 @@ func (d *Database) LastID() int {
 			log.Println(err4)
 		}
 		ff.TID = seq.Last_value
-		fmt.Println(seq.Last_value)
 	}
 	return ff.TID
 }
