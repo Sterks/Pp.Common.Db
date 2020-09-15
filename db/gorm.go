@@ -22,16 +22,16 @@ type Database struct {
 	Logger   *logger.Logger
 }
 
-const (
-	host     = "Postgres"
-	port     = 5432
-	user     = "user_ro"
-	password = "4r2w3e1q"
-	dbname   = "freader"
-)
+// const (
+// 	host     = "Postgres"
+// 	port     = 5432
+// 	user     = "user_ro"
+// 	password = "4r2w3e1q"
+// 	dbname   = "freader"
+// )
 
 // OpenDatabase ...
-func (d *Database) OpenDatabase() *gorm.DB {
+func (d *Database) OpenDatabase(host string, port int, user string, password string, dbname string) *gorm.DB {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
