@@ -35,6 +35,7 @@ func (d *Database) OpenDatabase(host string, port int, user string, password str
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
+	fmt.Println(psqlInfo)
 	db, err := gorm.Open("postgres", psqlInfo)
 	if err != nil {
 		log.Printf("Соединиться не удалось - %s", err)
