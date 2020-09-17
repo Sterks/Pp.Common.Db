@@ -48,10 +48,6 @@ func (d *Database) OpenDatabase(host string, port int, user string, password str
 
 // CreateInfoFile ...
 func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, fullpath string, typeFile string, file string) int {
-	// d.database.Set("gorm:association_autoupdate", false).Set("gorm:association_autocreate", false).Create(&files)
-	// filesTypes := d.database.Table("FileType")
-
-	d.Database.LogMode(true)
 
 	var gf models.SourceRegions
 	d.Database.Table("SourceRegions").Where("r_name = ?", region).Find(&gf)
@@ -68,7 +64,7 @@ func (d *Database) CreateInfoFile(info os.FileInfo, region string, hash string, 
 		d.Database.Table("Files").Where("f_id = ?", checker).Find(&lf)
 		lf.TDateLastCheck = time.Now()
 		d.Database.Save(&lf)
-		log.Printf("Дата успешно обновлена - %v", lf.TDateLastCheck.String())
+		// log.Printf("Дата успешно обновлена - %v", lf.TDateLastCheck.String())
 	}
 	if checker == 0 {
 
@@ -143,7 +139,7 @@ func (d *Database) QuantityTypeDoc(typeFile string) int {
 // CheckerExistFileDBNotHash ...
 func (d *Database) CheckerExistFileDBNotHash(file os.FileInfo) (int, string) {
 	var ff models.File
-	fmt.Printf("%v - %v - %v", file.Size(), file.Name(), file.ModTime())
+	// fmt.Printf("%v - %v - %v", file.Size(), file.Name(), file.ModTime())
 	d.Database.Table("Files").Where("f_size = ? and f_name = ? and f_date_create_from_source = ?", file.Size(), file.Name(), file.ModTime()).Find(&ff)
 	return ff.TID, ff.THash
 }
@@ -162,12 +158,14 @@ func (d *Database) CheckRegionsDb(region string) int {
 	return reg.RID
 }
 
+// GetAllRegions44 ...
 func (d *Database) GetAllRegions44() []models.SourceRegions {
 	var regions []models.SourceRegions
 	d.Database.Table("SourceRegions").Where("r_fz_law = 1").Scan(&regions)
 	return regions
 }
 
+// GetAllRegions223 ...
 func (d *Database) GetAllRegions223() []models.SourceRegions {
 	var regions []models.SourceRegions
 	d.Database.Table("SourceRegions").Where("r_fz_law = 2").Scan(&regions)
